@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "txtsong"
+version = "0.1.0"
+description = "Text Your Song – analysiert einen Song wie ein Producer und produziert ihn per Suno-API als Remix mit eigenem Text neu."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "python-dotenv>=1.0",
+    "librosa>=0.10",
+    "soundfile>=0.12",
+    "numpy>=1.26",
+    "yt-dlp>=2024.4.9",
+    "tenacity>=8.2",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+# Schwere ML-Abhängigkeiten (Stem-Trennung & Transkription)
+heavy = [
+    "demucs>=4.0",
+    "torch>=2.1",
+    "faster-whisper>=1.0",
+]
+# Job-Queue für robuste Hintergrund-Verarbeitung
+queue = [
+    "rq>=1.16",
+    "redis>=5.0",
+]
+spotify = ["spotipy>=2.23"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+txtsong = "txtsong.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: Tests, die schwere ML-Abhängigkeiten (Demucs/Whisper/torch) benötigen",
+]
+addopts = "-m 'not slow'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src"]

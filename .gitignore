@@ -1,0 +1,32 @@
+# Workspace / Job-Artefakte
+workspace/
+*.wav
+*.mp3
+*.flac
+*.m4a
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Modelle / Caches
+*.pt
+*.ckpt
+.cache/
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/

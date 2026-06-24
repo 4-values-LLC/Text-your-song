@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h1>Dein Song. Dein Text. Neu produziert.</h1>
+    <p>Gib einen YouTube-/Spotify-Link an oder lade eine Audiodatei hoch. Wir zerlegen
+       den Song wie ein Producer – Tempo, Tonart, Struktur, Instrumente, Vocals – und
+       bereiten alles vor, damit Suno daraus einen Remix mit <strong>deinem eigenen Text</strong> macht.</p>
+</section>
+
+{% if error %}<div class="alert">{{ error }}</div>{% endif %}
+
+<form action="/analyze" method="post" enctype="multipart/form-data" class="card">
+    <label for="source_url">Song-Link (YouTube oder Spotify)</label>
+    <input type="text" id="source_url" name="source_url"
+           placeholder="https://www.youtube.com/watch?v=...">
+
+    <div class="divider">oder</div>
+
+    <label for="audio_file">Audiodatei hochladen</label>
+    <input type="file" id="audio_file" name="audio_file" accept="audio/*">
+
+    <button type="submit">Song analysieren →</button>
+</form>
+{% endblock %}

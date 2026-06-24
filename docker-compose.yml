@@ -1,0 +1,36 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - USE_QUEUE=true
+      - REDIS_URL=redis://redis:6379/0
+      - WORKSPACE_DIR=/data/workspace
+    volumes:
+      - workspace:/data/workspace
+    depends_on:
+      - redis
+
+  worker:
+    build: .
+    command: python worker.py
+    env_file: .env
+    environment:
+      - USE_QUEUE=true
+      - REDIS_URL=redis://redis:6379/0
+      - WORKSPACE_DIR=/data/workspace
+    volumes:
+      - workspace:/data/workspace
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+
+volumes:
+  workspace:
+  redis-data:

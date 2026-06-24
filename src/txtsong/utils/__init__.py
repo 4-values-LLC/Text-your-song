@@ -1,0 +1,1 @@
+"""Hilfsfunktionen (Workspace, Audio, Logging)."""

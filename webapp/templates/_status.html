@@ -1,0 +1,15 @@
+{% if redirect %}
+<div hx-get="{{ redirect }}" hx-trigger="load" hx-target="body" hx-push-url="true"></div>
+<script>window.location.href = "{{ redirect }}";</script>
+{% endif %}
+<div class="progress">
+    <div class="bar {% if error %}bar-error{% endif %}"
+         style="width:{{ status.progress }}%"></div>
+</div>
+<p class="status-msg {% if error %}status-error{% endif %}">
+    {{ status.message or status.stage }}
+    {% if not error and not redirect %}<span class="spinner"></span>{% endif %}
+</p>
+{% if error %}
+<a href="/" class="button-link">Neu starten</a>
+{% endif %}

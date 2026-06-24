@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <h1>🎉 Dein Remix ist fertig!</h1>
+    {% if tracks %}
+        {% for track in tracks %}
+        <div class="track">
+            <h3>Version {{ loop.index }}</h3>
+            <audio controls src="/job/{{ job_id }}/media/{{ track }}"></audio>
+            <a class="button-link" href="/job/{{ job_id }}/media/{{ track }}" download>
+                ⬇ Herunterladen
+            </a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Es wurden keine Tracks gefunden. Bitte erneut versuchen.</p>
+    {% endif %}
+    <a href="/" class="button-link secondary">Neuen Song analysieren</a>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <h1>Producer-Analyse</h1>
+    <div class="report">{{ report_md }}</div>
+</section>
+
+<section class="card">
+    <h2>Dein eigener Text</h2>
+    <p>Unten siehst du die erkannte Struktur als Vorlage. Schreibe deinen Text in die
+       passenden Sektionen (oder füge einfach Strophen ein – wir ordnen sie zu). Die
+       Struktur-Tags wie <code>[Verse]</code> / <code>[Chorus]</code> bleiben erhalten.</p>
+    <form action="/job/{{ job_id }}/remix" method="post">
+        <textarea name="lyrics" rows="20" spellcheck="false">{{ template_text }}</textarea>
+        <button type="submit">Remix mit Suno erstellen →</button>
+    </form>
+</section>
+{% endblock %}

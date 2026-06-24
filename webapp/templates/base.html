@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Text Your Song{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">🎵 Text Your Song</a>
+        <span class="tagline">Song analysieren &amp; mit eigenem Text neu produzieren</span>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <small>Analyse via librosa · Demucs · Whisper — Produktion via Suno-API</small>
+    </footer>
+</body>
+</html>

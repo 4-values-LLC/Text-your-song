@@ -1,0 +1,6 @@
+# Schwere ML-Abhängigkeiten für die volle Analyse.
+# Benötigen viel RAM (idealerweise GPU). Separat installieren:
+#   pip install -r requirements-heavy.txt
+demucs>=4.0
+torch>=2.1
+faster-whisper>=1.0
