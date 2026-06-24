@@ -31,7 +31,8 @@ class SectionLabel(str, Enum):
 
 
 class Source(BaseModel):
-    origin: Literal["youtube", "spotify", "local"] = "local"
+    # "url" = beliebiger via yt-dlp aufgelöster Dienst (SoundCloud, Bandcamp, …)
+    origin: Literal["youtube", "spotify", "url", "local"] = "local"
     url: str | None = None
     title: str | None = None
     artist: str | None = None

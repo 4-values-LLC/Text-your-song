@@ -10,9 +10,11 @@
 {% if error %}<div class="alert">{{ error }}</div>{% endif %}
 
 <form action="/analyze" method="post" enctype="multipart/form-data" class="card">
-    <label for="source_url">Song-Link (YouTube oder Spotify)</label>
+    <label for="source_url">Song-Link (YouTube, Spotify, SoundCloud, Bandcamp …)</label>
     <input type="text" id="source_url" name="source_url"
            placeholder="https://www.youtube.com/watch?v=...">
+    <small class="hint">Es werden hunderte Dienste unterstützt. Spotify wird automatisch
+        über einen passenden Treffer aufgelöst.</small>
 
     <div class="divider">oder</div>
 

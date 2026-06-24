@@ -18,16 +18,22 @@ class IngestResult:
     source: Source
 
 
-_YOUTUBE_RE = re.compile(r"(youtube\.com|youtu\.be)", re.IGNORECASE)
 _SPOTIFY_RE = re.compile(r"open\.spotify\.com|spotify:", re.IGNORECASE)
+_URL_RE = re.compile(r"^https?://", re.IGNORECASE)
 
 
 def classify_input(value: str) -> str:
-    """Bestimmt den Typ einer Eingabe: 'youtube' | 'spotify' | 'local'."""
-    if _YOUTUBE_RE.search(value):
-        return "youtube"
+    """Bestimmt den Typ einer Eingabe: 'spotify' | 'url' | 'local'.
+
+    Spotify ist ein Sonderfall (Metadaten -> YouTube-Match). Jede andere
+    http(s)-URL wird über yt-dlp aufgelöst, das hunderte Dienste unterstützt
+    (YouTube, SoundCloud, Bandcamp, Vimeo, Dailymotion u. v. m.). Alles andere
+    gilt als lokaler Dateipfad.
+    """
     if _SPOTIFY_RE.search(value):
         return "spotify"
+    if _URL_RE.search(value.strip()):
+        return "url"
     return "local"
 
 
@@ -38,14 +44,14 @@ def resolve_source(value: str, ws: Workspace) -> IngestResult:
     reine Datei-Uploads benötigt wird.
     """
     kind = classify_input(value)
-    if kind == "youtube":
-        from txtsong.ingest.youtube import download_youtube
-
-        return download_youtube(value, ws)
     if kind == "spotify":
         from txtsong.ingest.spotify import resolve_spotify
 
         return resolve_spotify(value, ws)
+    if kind == "url":
+        from txtsong.ingest.youtube import download_url
+
+        return download_url(value, ws)
     from txtsong.ingest.local import ingest_local
 
     return ingest_local(Path(value), ws)

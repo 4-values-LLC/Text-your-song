@@ -15,7 +15,7 @@ Song mit deinem Text als Remix neu erzeugt.
 Song-Link/Datei
    │
    ▼
-[A] Ingest        yt-dlp / Datei / Spotify→YouTube  ──► source.wav
+[A] Ingest        yt-dlp (YouTube/SoundCloud/Bandcamp/… ) / Datei / Spotify→Match  ──► source.wav
 [B] Analyse       librosa (BPM, Tonart, Struktur, Energie, Klang)
                   Demucs (Stems → Instrumentierung, Vocal-Gender)
                   Whisper (Originaltext + Zeilen je Sektion)        ──► blueprint.json

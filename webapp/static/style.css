@@ -133,3 +133,4 @@ button, .button-link {
 
 footer { text-align: center; color: var(--muted); padding: 2rem; }
 code { background: #0f1117; padding: 0.1rem 0.4rem; border-radius: 4px; }
+.hint { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 0.3rem; }
