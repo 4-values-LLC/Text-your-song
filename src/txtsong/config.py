@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     suno_api_key: str = ""
     suno_base_url: str = "https://api.sunoapi.org"
     suno_upload_url: str = "https://sunoapiorg.redpandaai.co/api/file-stream-upload"
-    suno_model: str = "V4_5PLUS"
+    suno_model: str = "V5"
     suno_audio_weight: float = 0.65
     suno_style_weight: float = 0.6
     suno_weirdness: float = 0.3
