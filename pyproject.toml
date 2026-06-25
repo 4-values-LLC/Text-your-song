@@ -56,8 +56,9 @@ where = ["src"]
 testpaths = ["tests"]
 markers = [
     "slow: Tests, die schwere ML-Abhängigkeiten (Demucs/Whisper/torch) benötigen",
+    "live: echte Suno-API-Aufrufe (Netzwerk, API-Key, kostet ggf. Credits)",
 ]
-addopts = "-m 'not slow'"
+addopts = "-m 'not slow and not live'"
 
 [tool.ruff]
 line-length = 100

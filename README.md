@@ -93,6 +93,21 @@ pytest            # schnelle Unit-Tests (ohne schwere ML-Deps)
 pytest -m slow    # zusätzlich Demucs/Whisper-Tests
 ```
 
+### Echter Suno-End-to-End-Test (`-m live`)
+
+`tests/test_suno_live.py` ruft die echte Suno-API auf und ist standardmäßig
+deaktiviert (per Marker **und** Env-Schalter). Es wird eine kurze, lizenzfreie
+WAV synthetisch erzeugt und als Cover-Quelle genutzt:
+
+```bash
+# Nur Upload prüfen (kostenlos, keine Credits):
+RUN_SUNO_LIVE=1 SUNO_API_KEY=... pytest -m live -s tests/test_suno_live.py::test_live_upload
+
+# Voller Remix end-to-end (verbraucht Credits, dauert Minuten):
+RUN_SUNO_LIVE_COVER=1 SUNO_API_KEY=... pytest -m live -s tests/test_suno_live.py::test_live_cover_end_to_end
+# optional: SUNO_LIVE_VOCAL=1 (Vocal- statt Instrumental-Remix), SUNO_LIVE_TIMEOUT=600
+```
+
 ## Projektstruktur
 
 ```

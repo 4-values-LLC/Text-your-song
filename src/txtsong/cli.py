@@ -41,8 +41,8 @@ def cmd_template(args: argparse.Namespace) -> int:
 
 
 def cmd_remix(args: argparse.Namespace) -> int:
-    lyrics = _read_lyrics(args.lyrics)
-    out = run_remix(args.job_id, lyrics, dry_run=args.dry_run)
+    lyrics = _read_lyrics(args.lyrics) if args.lyrics else ""
+    out = run_remix(args.job_id, lyrics, instrumental=args.instrumental, dry_run=args.dry_run)
     if args.dry_run:
         print("--- Dry-Run: vorbereiteter Suno-Request ---\n")
         print(out.model_dump_json(indent=2))  # type: ignore[union-attr]
@@ -55,8 +55,10 @@ def cmd_remix(args: argparse.Namespace) -> int:
 
 def cmd_run(args: argparse.Namespace) -> int:
     analysis = run_analysis(args.source, job_id=args.job_id)
-    lyrics = _read_lyrics(args.lyrics)
-    out = run_remix(analysis.job_id, lyrics, dry_run=args.dry_run)
+    lyrics = _read_lyrics(args.lyrics) if args.lyrics else ""
+    out = run_remix(
+        analysis.job_id, lyrics, instrumental=args.instrumental, dry_run=args.dry_run
+    )
     print(f"Job-ID: {analysis.job_id}")
     if not args.dry_run:
         for t in out.tracks:  # type: ignore[union-attr]
@@ -79,13 +81,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     r = sub.add_parser("remix", help="Remix für einen analysierten Job erzeugen")
     r.add_argument("job_id")
-    r.add_argument("--lyrics", required=True, help="Pfad zur Textdatei mit eigenem Text")
+    r.add_argument("--lyrics", help="Pfad zur Textdatei mit eigenem Text (entfällt bei --instrumental)")
+    r.add_argument("--instrumental", action="store_true", help="Vocal-losen Remix erzeugen (Text ignoriert)")
     r.add_argument("--dry-run", action="store_true", help="Nur Request bauen, nicht senden")
     r.set_defaults(func=cmd_remix)
 
     run = sub.add_parser("run", help="Komplett: analysieren + remixen")
     run.add_argument("source")
-    run.add_argument("--lyrics", required=True)
+    run.add_argument("--lyrics", help="Pfad zur Textdatei mit eigenem Text (entfällt bei --instrumental)")
+    run.add_argument("--instrumental", action="store_true", help="Vocal-losen Remix erzeugen (Text ignoriert)")
     run.add_argument("--job-id", default=None)
     run.add_argument("--dry-run", action="store_true")
     run.set_defaults(func=cmd_run)
