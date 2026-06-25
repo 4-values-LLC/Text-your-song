@@ -134,7 +134,7 @@ def extract_features(audio_path: str) -> AudioFeatures:
         n = min(64, rms.size)
         idx = np.linspace(0, rms.size - 1, n).astype(int)
         curve = rms[idx]
-        curve = (curve - curve.min()) / (curve.ptp() + 1e-9)
+        curve = (curve - curve.min()) / (np.ptp(curve) + 1e-9)
         energy_curve = [round(float(v), 3) for v in curve]
     else:
         energy_curve = []
