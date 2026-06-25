@@ -111,11 +111,12 @@ def start_remix(
     job_id: str,
     background_tasks: BackgroundTasks,
     lyrics: str = Form(...),
+    instrumental: bool = Form(False),
 ):
     """Startet den Remix-Job mit dem eigenen Text des Nutzers."""
     ws = get_workspace(job_id, create=False)
     ws.write_status("queued", 0, "Remix eingereiht ...")
-    dispatch_remix(job_id, lyrics, background_tasks)
+    dispatch_remix(job_id, lyrics, instrumental=instrumental, background_tasks=background_tasks)
     return RedirectResponse(url=f"/job/{job_id}/remixing", status_code=303)
 
 

@@ -23,8 +23,14 @@ _MOOD_EN = {
 _SCALE_EN = {"major": "major", "minor": "minor"}
 
 
-def build_style(bp: SongBlueprint, *, max_len: int = 1000) -> str:
-    """Baut den Style-String (englisch), begrenzt auf ``max_len`` Zeichen."""
+def build_style(bp: SongBlueprint, *, max_len: int = 1000, instrumental: bool = False) -> str:
+    """Baut den Style-String (englisch), begrenzt auf ``max_len`` Zeichen.
+
+    ``instrumental`` beschreibt die **gewünschte Ausgabe**, nicht die Quelle:
+    bei ``True`` wird „instrumental" angehängt und kein Vocal-Style ergänzt; bei
+    ``False`` wird **immer** ein Vocal-Style ergänzt — auch wenn der Quell-Track
+    instrumental war (der Nutzer legt ja seinen eigenen Text darüber).
+    """
     parts: list[str] = []
 
     # Genre / Subgenre
@@ -49,13 +55,13 @@ def build_style(bp: SongBlueprint, *, max_len: int = 1000) -> str:
     # Instrumente
     parts.extend(bp.instrumentation.instruments)
 
-    # Vocal-Style
-    if bp.vocals.present:
+    # Vocal-Style — richtet sich nach der GEWÜNSCHTEN Ausgabe, nicht der Quelle.
+    if instrumental:
+        parts.append("instrumental")
+    else:
         gender = {"m": "male", "f": "female"}.get(bp.vocals.gender_guess or "", "")
         vstyle = bp.vocals.style or "lead vocals"
         parts.append(f"{gender} {vstyle}".strip())
-    elif bp.vocals.present is False:
-        parts.append("instrumental")
 
     # Klangbild / Ära
     if bp.spectral.brightness:

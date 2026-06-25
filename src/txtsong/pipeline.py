@@ -67,24 +67,33 @@ def run_analysis(source_input: str, job_id: str | None = None) -> AnalysisResult
 
 
 def build_request(
-    ws: Workspace, blueprint: SongBlueprint, user_lyrics: str, *, upload_url: str
+    ws: Workspace,
+    blueprint: SongBlueprint,
+    user_lyrics: str,
+    *,
+    upload_url: str,
+    instrumental: bool = False,
 ) -> SunoRequest:
-    """Baut (und speichert) den vollständigen SunoRequest aus Blueprint + Text."""
+    """Baut (und speichert) den vollständigen SunoRequest aus Blueprint + Text.
+
+    ``instrumental`` bezieht sich auf die gewünschte Ausgabe: bei ``True`` wird
+    ein vocal-loser Remix erzeugt und der Nutzertext ignoriert.
+    """
     settings = get_settings()
     limits = settings.model_limits
 
     template = build_template(blueprint)
     aligned = align_lyrics(template, user_lyrics)
-    prompt = clamp_prompt(aligned.to_suno_prompt(), max_len=limits["prompt"])
+    prompt = "" if instrumental else clamp_prompt(aligned.to_suno_prompt(), max_len=limits["prompt"])
 
     req = SunoRequest(
         upload_url=upload_url,
-        style=build_style(blueprint, max_len=limits["style"]),
+        style=build_style(blueprint, max_len=limits["style"], instrumental=instrumental),
         title=derive_title(blueprint, max_len=limits["title"]),
         prompt=prompt,
         model=settings.suno_model,
         custom_mode=True,
-        instrumental=False,
+        instrumental=instrumental,
         callback_url=settings.suno_callback_url or None,
         audio_weight=settings.suno_audio_weight,
         style_weight=settings.suno_style_weight,
@@ -96,10 +105,14 @@ def build_request(
     return req
 
 
-def run_remix(job_id: str, user_lyrics: str, *, dry_run: bool = False) -> CoverResult | SunoRequest:
+def run_remix(
+    job_id: str, user_lyrics: str, *, instrumental: bool = False, dry_run: bool = False
+) -> CoverResult | SunoRequest:
     """Stufe D–E: Request bauen, Audio hochladen, upload-cover, Ergebnis holen.
 
-    Mit ``dry_run=True`` wird nur der Request gebaut und zurückgegeben (kein API-Call).
+    Mit ``instrumental=True`` wird ein vocal-loser Remix erzeugt (Nutzertext
+    ignoriert). Mit ``dry_run=True`` wird nur der Request gebaut und
+    zurückgegeben (kein API-Call).
     """
     ws = get_workspace(job_id, create=False)
     if not ws.blueprint_path.exists():
@@ -120,12 +133,15 @@ def run_remix(job_id: str, user_lyrics: str, *, dry_run: bool = False) -> CoverR
 
     if dry_run:
         # Platzhalter-URL, damit der Request validierbar ist.
-        return build_request(ws, blueprint, user_lyrics, upload_url="https://dry-run.local/audio.wav")
+        return build_request(
+            ws, blueprint, user_lyrics,
+            upload_url="https://dry-run.local/audio.wav", instrumental=instrumental,
+        )
 
     ws.write_status("upload", 20, "Lade Audio zu Suno hoch ...")
     upload_url = upload_audio(upload_path)
 
-    req = build_request(ws, blueprint, user_lyrics, upload_url=upload_url)
+    req = build_request(ws, blueprint, user_lyrics, upload_url=upload_url, instrumental=instrumental)
 
     ws.write_status("submit", 35, "Sende Remix-Auftrag an Suno ...")
     client = SunoClient()

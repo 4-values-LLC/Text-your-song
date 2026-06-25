@@ -12,6 +12,10 @@
        Struktur-Tags wie <code>[Verse]</code> / <code>[Chorus]</code> bleiben erhalten.</p>
     <form action="/job/{{ job_id }}/remix" method="post">
         <textarea name="lyrics" rows="20" spellcheck="false">{{ template_text }}</textarea>
+        <label class="checkbox">
+            <input type="checkbox" name="instrumental" value="true">
+            Instrumental (ohne Gesang) erzeugen – der Text oben wird dann ignoriert.
+        </label>
         <button type="submit">Remix mit Suno erstellen →</button>
     </form>
 </section>

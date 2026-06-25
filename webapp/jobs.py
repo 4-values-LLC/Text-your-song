@@ -28,11 +28,11 @@ def analysis_job(source_input: str, job_id: str) -> None:
         ws.write_status("error", 100, f"Analyse fehlgeschlagen: {exc}")
 
 
-def remix_job(job_id: str, user_lyrics: str) -> None:
+def remix_job(job_id: str, user_lyrics: str, instrumental: bool = False) -> None:
     """Führt den Remix aus und schreibt den Status (inkl. Fehler)."""
     ws = get_workspace(job_id, create=False)
     try:
-        run_remix(job_id, user_lyrics)
+        run_remix(job_id, user_lyrics, instrumental=instrumental)
     except Exception as exc:  # noqa: BLE001
         log.exception("Remix-Job %s fehlgeschlagen", job_id)
         ws.write_status("error", 100, f"Remix fehlgeschlagen: {exc}")
@@ -59,12 +59,14 @@ def dispatch_analysis(source_input: str, job_id: str, background_tasks=None) -> 
         analysis_job(source_input, job_id)
 
 
-def dispatch_remix(job_id: str, user_lyrics: str, background_tasks=None) -> None:
+def dispatch_remix(
+    job_id: str, user_lyrics: str, *, instrumental: bool = False, background_tasks=None
+) -> None:
     """Startet den Remix-Job (Queue oder inline)."""
     settings = get_settings()
     if settings.use_queue:
-        _enqueue(remix_job, job_id, user_lyrics)
+        _enqueue(remix_job, job_id, user_lyrics, instrumental)
     elif background_tasks is not None:
-        background_tasks.add_task(remix_job, job_id, user_lyrics)
+        background_tasks.add_task(remix_job, job_id, user_lyrics, instrumental)
     else:
-        remix_job(job_id, user_lyrics)
+        remix_job(job_id, user_lyrics, instrumental)
